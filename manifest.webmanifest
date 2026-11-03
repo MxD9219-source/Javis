@@ -1,0 +1,10 @@
+{
+  "name": "J.A.R.V.I.S. – Free Edition",
+  "short_name": "JARVIS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#07111e",
+  "theme_color": "#07111e",
+  "description": "Dein kostenloser persönlicher iPhone-Assistent",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"}]
+}

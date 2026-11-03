@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JARVIS">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>J.A.R.V.I.S. – Free Edition</title>
+<style>
+:root{color-scheme:dark;--cyan:#55dfff;--muted:#88a5bb;--panel:#0c1d2e;--line:#24516d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 22%,#12324d 0,#081321 44%,#030811 100%);color:#effaff;font:15px system-ui,-apple-system,sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 18px 12px;max-width:650px;margin:auto}
+.brand{letter-spacing:.2em;font-weight:700}.eyebrow{font-size:10px;letter-spacing:.25em;color:var(--cyan)}.status{font-size:10px;color:#72e4b5}
+main{max-width:650px;margin:auto;padding:8px 16px 100px}.center{text-align:center;padding:22px 0 20px}
+.core{width:164px;height:164px;border-radius:50%;margin:8px auto 25px;display:grid;place-items:center;position:relative;background:radial-gradient(circle,#1a5778,#0a263b 55%,#06101c 73%);box-shadow:0 0 40px #1599d566,inset 0 0 30px #36caff55;animation:glow 3s ease-in-out infinite alternate}
+.core:before,.core:after{content:"";position:absolute;inset:-10px;border:1px solid #55dfff99;border-radius:50%;animation:spin 15s linear infinite}.core:after{inset:-18px;border-style:dashed;opacity:.6;animation-direction:reverse}
+.core span{width:98px;height:98px;border:2px solid var(--cyan);border-radius:50%;display:grid;place-items:center;font-size:36px;color:white;text-shadow:0 0 18px var(--cyan);box-shadow:0 0 22px #55dfff88}
+.listening .core span{animation:pulse .5s infinite alternate}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes glow{to{box-shadow:0 0 65px #1599d588,inset 0 0 35px #36caff77}}@keyframes pulse{to{transform:scale(1.12)}}
+button,input{font:inherit}button{color:#dff8ff;background:#0d2940;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer}button:active{background:#174565}.primary{border-color:#46cfff;color:#bcefff;border-radius:99px;padding:13px 24px;letter-spacing:.1em}.muted{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.panel{background:#0c1d2edb;border:1px solid #24516d88;border-radius:15px;padding:14px}.label{font-size:10px;letter-spacing:.16em;color:var(--muted)}.value{font-size:23px;margin-top:7px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.actions button{font-size:12px;min-height:65px}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;justify-content:center;background:#06111eF2;border-top:1px solid #24516d;padding:8px 5px max(12px,env(safe-area-inset-bottom));z-index:4}
+nav button{flex:1;max-width:120px;background:transparent;border:0;color:#7896ac;font-size:11px;padding:8px 3px}nav button.active{color:var(--cyan)}
+.page{display:none}.page.active{display:block}.page h2{font-size:13px;letter-spacing:.2em;color:var(--cyan);font-weight:500}
+#messages{display:flex;flex-direction:column;gap:10px;min-height:280px;max-height:48vh;overflow:auto;padding:8px 0 14px}.bubble{padding:12px;border-radius:13px;max-width:90%;white-space:pre-wrap;line-height:1.45;font-size:14px}.ai{background:#10263a;border:1px solid #24516d}.user{background:#12415e;border:1px solid #2779a4;margin-left:auto}
+form{display:flex;gap:8px}input{min-width:0;flex:1;background:#071522;color:white;border:1px solid #31536b;border-radius:12px;padding:12px}
+a{color:var(--cyan)}.wide{width:100%;margin-top:10px}.weather-big{text-align:center;padding:25px 10px}.weather-big .value{font-size:42px}
+</style>
+</head>
+<body>
+<header><div><div class="eyebrow">PERSONAL INTELLIGENCE</div><div class="brand">J.A.R.V.I.S.</div></div><div class="status">● FREE EDITION</div></header>
+<main>
+<section id="home" class="page active">
+ <div class="center"><div class="eyebrow">SYSTEM STANDBY</div><div class="core" id="core"><span>J</span></div><div id="state" class="eyebrow">AWAITING COMMAND</div><p class="muted">Dein persönlicher Assistent</p><button class="primary" id="listen">◉ &nbsp; MIT JARVIS SPRECHEN</button><p class="muted" id="voiceStatus">Spracherkennung hängt von iOS/Safari ab.</p></div>
+ <div class="grid">
+  <div class="panel"><div class="label">WETTER · FRANKFURT</div><div class="value" id="weatherValue">--°C</div><div class="muted" id="weatherDesc">Wird geladen …</div></div>
+  <div class="panel"><div class="label">LOKALE UHRZEIT</div><div class="value" id="clock">--:--</div><div class="muted" id="date"></div></div>
+ </div>
+ <h2 style="margin-top:23px">SCHNELLBEFEHLE</h2>
+ <div class="actions">
+  <button data-cmd="Gib mir eine Tagesübersicht.">◷<br>Tagesübersicht</button>
+  <button data-cmd="Wie ist das Wetter?">☁<br>Wetter</button>
+  <button data-cmd="Suche im Internet nach den neuesten KI-Nachrichten.">⌕<br>Recherche</button>
+  <button data-cmd="Hilf mir, meine Aufgaben zu planen.">▤<br>Aufgaben</button>
+  <button data-cmd="Erzähl mir einen interessanten Fakt.">✧<br>Wissen</button>
+  <button data-cmd="Welche Funktionen hast du?">⌘<br>Funktionen</button>
+ </div>
+ <div class="panel" style="margin-top:14px"><div class="label">KOSTEN-CHECK</div><div style="margin-top:6px">Keine API-Schlüssel · keine Abos · kein kostenpflichtiger KI-Aufruf</div><p class="muted">ChatGPT wird bei Bedarf separat geöffnet. Wetterdaten kommen von Open-Meteo.</p></div>
+</section>
+<section id="chat" class="page">
+ <h2>NEURAL INTERFACE</h2><div id="messages"><div class="bubble ai">Guten Tag. Ich bin J.A.R.V.I.S. Wie kann ich behilflich sein?</div></div>
+ <form id="chatForm"><input id="chatInput" placeholder="Befehl an Jarvis …" autocomplete="off"><button type="submit">➤</button></form>
+ <button class="wide" id="openChatGPT">ChatGPT separat öffnen ↗</button>
+ <p class="muted">Diese kostenlose Version führt einfache lokale Befehle aus. Für freie KI-Unterhaltungen öffnet sie ChatGPT separat; ein kostenloser API-Zugang ist damit nicht verbunden.</p>
+</section>
+<section id="weather" class="page"><h2>ATMOSPHERIC SYSTEM</h2><div class="panel weather-big"><div style="font-size:42px" id="weatherIcon">☁️</div><div class="value" id="weatherDetail">--°C</div><div id="weatherText">Wetter wird geladen</div><p class="muted" id="weatherPlace">Frankfurt am Main</p><p class="muted" id="wind"></p></div><button class="wide" id="locate">Meinen Standort verwenden</button><button class="wide" id="refreshWeather">Wetter aktualisieren</button><p class="muted">Wetterquelle: Open-Meteo (kostenlos für nichtkommerzielle Nutzung).</p></section>
+<section id="news" class="page"><h2>GLOBAL INTELLIGENCE</h2><div class="panel"><strong>Internetrecherche</strong><p class="muted">Starte eine Suche im Browser oder nutze ChatGPT separat für eine Zusammenfassung.</p><form id="searchForm"><input id="searchInput" placeholder="Suchbegriff …"><button>⌕</button></form></div><div class="panel" style="margin-top:12px"><strong>Hinweis</strong><p class="muted">Automatische Nachrichtenüberwachung im Hintergrund ist in dieser rein statischen Free-Version nicht aktiv.</p></div></section>
+<section id="system" class="page"><h2>SYSTEM CONFIGURATION</h2><div class="panel"><strong>Sprachausgabe</strong><p class="muted">Nutzt die auf deinem iPhone verfügbaren deutschen Systemstimmen.</p><button id="testVoice">Stimme testen</button><hr style="border-color:#24445a;margin:17px 0"><strong>Siri einrichten</strong><p class="muted">Erstelle in Apples Kurzbefehle einen Kurzbefehl mit der Aktion „URL öffnen“ und deiner veröffentlichten Jarvis-Adresse. Benenne ihn „Jarvis starten“.</p><strong>Installieren</strong><p class="muted">In Safari: Teilen → Zum Home-Bildschirm → Als Web-App öffnen → Hinzufügen.</p><strong>Datenschutz</strong><p class="muted">Aufgaben und Einstellungen dieser Demo werden nicht an einen KI-Server gesendet. Keine Zugangsdaten in diese Website eintragen.</p></div></section>
+</main>
+<nav><button class="active" data-page="home">⌂<br>HOME</button><button data-page="chat">◉<br>CHAT</button><button data-page="weather">☼<br>WETTER</button><button data-page="news">⌕<br>WEB</button><button data-page="system">⚙<br>SYSTEM</button></nav>
+<script>
+const $=id=>document.getElementById(id);
+function page(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id))}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>page(b.dataset.page));
+function say(t){if(!('speechSynthesis'in window)){ $('voiceStatus').textContent='Sprachausgabe nicht verfügbar.';return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';u.rate=.88;u.pitch=.72;speechSynthesis.speak(u)}
+function add(t,who){const d=document.createElement('div');d.className='bubble '+who;d.textContent=t;$('messages').append(d);$('messages').scrollTop=$('messages').scrollHeight}
+function respond(t){const q=t.toLowerCase();let a='';
+if(q.includes('wetter')){a='Ich zeige dir die aktuellen Wetterdaten im Wetterbereich.';page('weather')}
+else if(q.includes('funktion'))a='Ich kann lokale Befehle ausführen, das Wetter abrufen, Websuchen öffnen und Antworten vorlesen. Für offene KI-Dialoge kannst du ChatGPT separat starten.';
+else if(q.includes('tagesübersicht'))a='Deine Tagesübersicht: Prüfe zuerst das aktuelle Wetter und deine iPhone-Erinnerungen. Eine automatische Kalenderverbindung ist in dieser Free-Version noch nicht eingerichtet.';
+else if(q.includes('aufgaben'))a='Für Aufgaben kannst du die Apple-Erinnerungen-App verwenden. Siri kann Erinnerungen ebenfalls direkt anlegen.';
+else if(q.includes('fakt'))a='Ein interessanter Fakt: Das Licht der Sonne benötigt ungefähr acht Minuten und zwanzig Sekunden bis zur Erde.';
+else if(q.includes('suche')||q.includes('recherche')){a='Ich öffne eine Websuche in einem neuen Tab.';window.open('https://www.google.com/search?q='+encodeURIComponent(t),'_blank')}
+else a='Ich kann diesen freien Dialog nicht selbst mit einem KI-Modell beantworten, ohne einen KI-Dienst anzubinden. Öffne ChatGPT separat für eine kostenlose KI-Unterhaltung.';
+add(a,'ai');$('state').textContent='SYSTEM STANDBY';say(a)}
+function send(t){if(!t.trim())return;page('chat');add(t,'user');respond(t)}
+$('chatForm').onsubmit=e=>{e.preventDefault();send($('chatInput').value);$('chatInput').value=''};
+document.querySelectorAll('[data-cmd]').forEach(b=>b.onclick=()=>send(b.dataset.cmd));
+$('openChatGPT').onclick=()=>window.open('https://chatgpt.com/','_blank');
+$('searchForm').onsubmit=e=>{e.preventDefault();window.open('https://www.google.com/search?q='+encodeURIComponent($('searchInput').value),'_blank')};
+$('testVoice').onclick=()=>say('Guten Tag. Ich bin Jarvis. Alle lokalen Systeme sind einsatzbereit.');
+$('listen').onclick=()=>{const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){$('voiceStatus').textContent='Safari unterstützt diese Spracherkennung möglicherweise nicht. Verwende die Diktierfunktion der iPhone-Tastatur.';return}const r=new SR();r.lang='de-DE';r.onstart=()=>{$('core').classList.add('listening');$('state').textContent='LISTENING'};r.onend=()=>{$('core').classList.remove('listening');$('state').textContent='SYSTEM STANDBY'};r.onerror=()=>{$('voiceStatus').textContent='Mikrofonzugriff nicht verfügbar. Prüfe die Safari-Berechtigung.'};r.onresult=e=>send(e.results[0][0].transcript);r.start()};
+function weatherCode(c){if(c===0)return ['☀️','Klar'];if([1,2].includes(c))return ['🌤️','Leicht bewölkt'];if(c===3)return ['☁️','Bewölkt'];if([45,48].includes(c))return ['🌫️','Nebel'];if(c>=51&&c<=67)return ['🌧️','Nieselregen / Regen'];if(c>=71&&c<=77)return ['🌨️','Schnee'];if(c>=80&&c<=82)return ['🌦️','Regenschauer'];if(c>=95)return ['⛈️','Gewitter'];return ['🌡️','Wetter aktuell']}
+async function loadWeather(lat=50.1109,lon=8.6821,place='Frankfurt am Main'){try{$('weatherDesc').textContent='Lade Live-Daten …';const url=`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,wind_speed_10m&timezone=auto`;const r=await fetch(url);if(!r.ok)throw Error();const d=await r.json(),c=d.current,[icon,desc]=weatherCode(c.weather_code);$('weatherValue').textContent=Math.round(c.temperature_2m)+'°C';$('weatherDesc').textContent=desc;$('weatherIcon').textContent=icon;$('weatherDetail').textContent=Math.round(c.temperature_2m)+'°C';$('weatherText').textContent=desc+' · gefühlt '+Math.round(c.apparent_temperature)+'°C';$('weatherPlace').textContent=place;$('wind').textContent=`Wind ${Math.round(c.wind_speed_10m)} km/h · Luftfeuchte ${c.relative_humidity_2m}% · Niederschlag ${c.precipitation} mm`}catch(e){$('weatherDesc').textContent='Wetterdaten gerade nicht erreichbar';$('weatherText').textContent='Verbindung fehlgeschlagen'}}
+$('refreshWeather').onclick=()=>loadWeather();$('locate').onclick=()=>{if(!navigator.geolocation){$('weatherPlace').textContent='Standortfunktion nicht verfügbar';return}navigator.geolocation.getCurrentPosition(p=>loadWeather(p.coords.latitude,p.coords.longitude,'Dein Standort'),()=>{$('weatherPlace').textContent='Standortfreigabe verweigert – Frankfurt bleibt eingestellt'})};
+function tick(){const d=new Date();$('clock').textContent=d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});$('date').textContent=d.toLocaleDateString('de-DE',{weekday:'short',day:'2-digit',month:'long'})}tick();setInterval(tick,30000);loadWeather();
+if('serviceWorker'in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
